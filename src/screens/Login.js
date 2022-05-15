@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
 import {Text,View,Image, TextInput} from 'react-native';
 import Icon from '@expo/vector-icons/AntDesign';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import  authService  from '../services/AuthService';
 
-export default class Login extends React.Component{
+const Login = ({ navigation, analyticsTrackEvent }) => {
+const userType = navigation.state.params.person;
+const [email,setEmail] = useState("");
+const [password,setPassword] = useState("");
 
-    render(){
-        const {navigate} = this.props.navigation
+
+const loginUser = async()=>{
+    await authService.login({email,password,userType},navigation);
+}
         return(
             <View style={{backgroundColor:"#FFF",height:"100%"}}>
                 <Image source ={require('../images/image.jpg')}
@@ -16,7 +23,7 @@ export default class Login extends React.Component{
                      fontSize:30,
                      alignSelf:"center",
                  }}
-                >Save the world</Text>
+                >Save the Life</Text>
 
                 <Text
                 style={{
@@ -26,7 +33,7 @@ export default class Login extends React.Component{
                     opacity:0.4
                 }}
                 >
-                    Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.
+                    Every Year 20 million people lose their life due to  road Accidents due to late treatment. 
                 </Text>
 
                 <View style={{
@@ -42,6 +49,8 @@ export default class Login extends React.Component{
                 }}>
                     <Icon name="mail" color="#00716F" size={24}/>
                     <TextInput 
+                        placeholder="Email"
+                        onChangeText={setEmail}
                         style={{paddingHorizontal:10}}
                     />
 
@@ -61,6 +70,9 @@ export default class Login extends React.Component{
                 }}>
                     <Icon name="mail" color="#00716F" size={24}/>
                     <TextInput 
+                              secureTextEntry
+                        placeholder="Password"
+                        onChangeText={setPassword}
                         style={{paddingHorizontal:10}}
                     />
 
@@ -68,7 +80,9 @@ export default class Login extends React.Component{
 
                 </View>
 
-                <View style={{
+                <TouchableOpacity 
+                onPress={loginUser}
+                style={{
                     marginHorizontal:55,
                     alignItems:"center",
                     justifyContent:"center",
@@ -79,11 +93,11 @@ export default class Login extends React.Component{
                 }}>
                     <Text style={{
                         color:"white",
-                    }}>Already a member</Text>
-                </View>
+                    }}>Login</Text>
+                </TouchableOpacity>
                 <Text 
                 
-                onPress={()=>navigate('Register')}
+                onPress={()=>navigation.navigate('Register',{userType:userType})}
                 
                 style={{
                     alignSelf:"center",
@@ -92,5 +106,6 @@ export default class Login extends React.Component{
                 }}>New User</Text>
             </View>
         )
-    }
+    
 }
+export default Login;

@@ -1,17 +1,17 @@
-import {createStackNavigator} from 'react-navigation-stack';
-import {createAppContainer} from 'react-navigation';
-import Login from '../screens/Login';
-import Register from '../screens/Register'
+import {createAppContainer,createSwitchNavigator} from 'react-navigation';
+import MainTabNavigator from './MainTabNavigator';
+import AuthNavigator from './AuthNavigator';
+import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 
-const stackNavigatorOptions = {
-    headerShown:false
-}
-const AppNavigator = createStackNavigator({
-    Login:{screen:Login},
-    Register:{screen:Register},
+
+const AppNavigator = createSwitchNavigator({
+    AuthLoading: AuthLoadingScreen,
+    AuthNavigator: AuthNavigator,
+    MainStack: MainTabNavigator
+ 
 },
 {
-    defaultNavigationOptions : stackNavigatorOptions
+    defaultNavigationOptions : 'AuthLoading'
 }  
 );
 export default createAppContainer(AppNavigator);
