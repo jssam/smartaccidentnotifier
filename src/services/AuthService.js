@@ -9,7 +9,10 @@ const { CLIENT_ID, CLIENT_SECRET, VERSION } = config;
 
 const ENDPOINTS = {
   LOGIN: 'auth/token',
-  SIGN_UP: '/auth/register',
+  LOGIND: '/login/driver',
+  LOGINU: '/login/customer',
+  SIGN_D: '/driver',
+  SIGN_U: '/customer',
   LOGOUT: 'auth/logout',
   FACEBOOK: '/auth/social/facebook',
   GOOGLE: '/auth/social/google',
@@ -66,12 +69,38 @@ class AuthService extends ApiService {
 
   login = async (loginData,navigation) => {
     const { data } = await this.apiClient.post(ENDPOINTS.LOGIN, {
-      email: loginData.email,
+      phone: loginData.email,
       password:loginData.password,
       client_id: CLIENT_ID,
       client_secret: CLIENT_SECRET
     });
-    await this.createSession({ ...loginData,    email: loginData.email,userType:loginData.userType });
+    await this.createSession({ ...loginData,    phone: loginData.email,userType:loginData.userType });
+    if(data?.accessToken!=null){
+    navigation.navigate('HomeScreen');
+  }
+    return data;
+  };
+  loginD = async (loginData,navigation) => {
+    const { data } = await this.apiClient.post(ENDPOINTS.LOGIND, {
+      phone: loginData.email,
+      password:loginData.password,
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET
+    });
+    await this.createSession({ ...loginData,    phone: loginData.email,userType:loginData.userType });
+    if(data?.accessToken!=null){
+    navigation.navigate('HomeScreen');
+  }
+    return data;
+  };
+  loginU = async (loginData,navigation) => {
+    const { data } = await this.apiClient.post(ENDPOINTS.LOGINU, {
+      phone: loginData.email,
+      password:loginData.password,
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET
+    });
+    await this.createSession({ ...loginData,    phone: loginData.email,userType:loginData.userType });
     if(data?.accessToken!=null){
     navigation.navigate('HomeScreen');
   }
@@ -90,10 +119,24 @@ class AuthService extends ApiService {
 
   resetPassword = data => this.apiClient.post(ENDPOINTS.RESET_PASSWORD, data);
 
-  signup = async signupData => {
-    await this.apiClient.post(ENDPOINTS.SIGN_UP, signupData);
-    const { email, password } = signupData;
-    return this.login({ email, password });
+  signupU = async (signupData,navigation) => {
+    const { data } =  await this.apiClient.post(ENDPOINTS.SIGN_U, signupData);
+
+    if(data?.accessToken!=null){
+      await this.createSession({ ...data,    email: signupData.email });
+    navigation.navigate('HomeScreen');
+  }
+    return data;
+  };
+
+  signupD = async (signupData,navigation) => {
+    const { data } =  await this.apiClient.post(ENDPOINTS.SIGN_D, signupData);
+
+    if(data?.accessToken!=null){
+      await this.createSession({ ...data,    email: signupData.email });
+    navigation.navigate('HomeScreen');
+  }
+    return data;
   };
 
   getToken = async () => {

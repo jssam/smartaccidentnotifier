@@ -11,7 +11,23 @@ const [password,setPassword] = useState("");
 
 
 const loginUser = async()=>{
-    await authService.login({email,password,userType},navigation);
+    if(userType==='driver'){
+        if(email===''||password===''){
+            alert('Please fill all the fields');
+            return;
+        }else{
+            await authService.loginD({email,password,userType},navigation);
+        }
+    }
+    else{
+        if(email===''||password===''){
+            alert('Please fill all the fields');
+            return;
+        }else{
+            await authService.loginU({email,password,userType},navigation);
+        }
+  
+    }
 }
         return(
             <View style={{backgroundColor:"#FFF",height:"100%"}}>
@@ -49,7 +65,10 @@ const loginUser = async()=>{
                 }}>
                     <Icon name="mail" color="#00716F" size={24}/>
                     <TextInput 
-                        placeholder="Email"
+                        placeholder="phone number"
+                        keyboardType='number-pad'
+                        dataDetectorTypes='phoneNumber'
+
                         onChangeText={setEmail}
                         style={{paddingHorizontal:10}}
                     />

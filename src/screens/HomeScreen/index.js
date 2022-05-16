@@ -6,11 +6,11 @@ import openMap from 'react-native-open-maps';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import authService from '../../services/AuthService';
 import {ActivityIndicator} from 'react-native';
-import { Linking } from 'expo';
+import {Linking} from 'expo';
 const HomeScreen = ({navigation}) => {
-   const mapOpen=()=>{
-    openMap({latitude: 37.865101, longitude: -119.538330});
-   }
+  const mapOpen = () => {
+    openMap({latitude: 37.865101, longitude: -119.53833});
+  };
   return (
     <View
       style={{
@@ -27,23 +27,30 @@ const HomeScreen = ({navigation}) => {
         Save the Life
       </Text>
       <View style={{height: '70%'}}>
-        {false ? (
-           <View
-           style={{
-             height: '90%',
-             width: '90%',
-             borderColor: 'grey',
-             borderWidth: 2,
-             margin: 16,
-             borderRadius: 23,
-             alignContent:'center',
-             alignItems:'center'
-           }}>
-          <ActivityIndicator
+        {true ? (
+          <View
             style={{
-              marginTop:"50%",
-            }}
-          /></View>
+              height: '90%',
+              width: '90%',
+              borderColor: 'grey',
+              borderWidth: 2,
+              margin: 16,
+              borderRadius: 23,
+              alignContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator
+              style={{
+                marginTop: '50%',
+              }}
+            />
+            <Text style={{fontSize: 20, margin: 16}}>
+              searching for accident
+            </Text>
+            <Text style={{fontSize: 20, margin: 16}}>
+              if it occur you will be notified
+            </Text>
+          </View>
         ) : (
           <View
             style={{
@@ -65,7 +72,9 @@ const HomeScreen = ({navigation}) => {
               place: sajsannajcnajsncjasn sancj
             </Text>
             <TouchableOpacity
-              onPress={() => { mapOpen();}}
+              onPress={() => {
+                mapOpen();
+              }}
               style={{
                 marginHorizontal: 55,
                 alignItems: 'center',
