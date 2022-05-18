@@ -18,7 +18,8 @@ const ENDPOINTS = {
   GOOGLE: '/auth/social/google',
   FORGOT_PASSWORD: '/user/forgot-password',
   RESET_PASSWORD: '/user/reset-password',
-  GENERATE_AND_SEND_OTP: 'auth/generate-otp'
+  accept: '/accept',
+  accident:"/popups",
 };
 
 class AuthService extends ApiService {
@@ -87,7 +88,7 @@ class AuthService extends ApiService {
       client_id: CLIENT_ID,
       client_secret: CLIENT_SECRET
     });
-    await this.createSession({ ...loginData,    phone: loginData.email,userType:loginData.userType });
+    await this.createSession({ ...data,    phone: loginData.email,userType:loginData.userType });
     if(data?.accessToken!=null){
     navigation.navigate('HomeScreen');
   }
@@ -100,10 +101,16 @@ class AuthService extends ApiService {
       client_id: CLIENT_ID,
       client_secret: CLIENT_SECRET
     });
-    await this.createSession({ ...loginData,    phone: loginData.email,userType:loginData.userType });
+    await this.createSession({ ...data,    phone: loginData.email,userType:loginData.userType });
     if(data?.accessToken!=null){
     navigation.navigate('HomeScreen');
   }
+    return data;
+  };
+  accept = async (loginData) => {
+    const { data } = await this.apiClient.post(ENDPOINTS.accept,
+      loginData
+    );
     return data;
   };
 
@@ -133,9 +140,13 @@ class AuthService extends ApiService {
     const { data } =  await this.apiClient.post(ENDPOINTS.SIGN_D, signupData);
 
     if(data?.accessToken!=null){
-      await this.createSession({ ...data,    email: signupData.email });
+      await this.createSession({ ...data,    phonenumber: signupData.email });
     navigation.navigate('HomeScreen');
   }
+    return data;
+  };
+  accident = async () => {
+    const { data } =  await this.apiClient.get(ENDPOINTS.accident,{});
     return data;
   };
 

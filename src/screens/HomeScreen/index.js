@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {View, Text} from 'react-native';
 import openMap from 'react-native-open-maps';
@@ -7,10 +7,52 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import authService from '../../services/AuthService';
 import {ActivityIndicator} from 'react-native';
 import {Linking} from 'expo';
+
 const HomeScreen = ({navigation}) => {
   const mapOpen = () => {
-    openMap({latitude: 37.865101, longitude: -119.53833});
+    openMap({latitude: parseInt(lat), longitude: parseInt(long)},navigation=true);
   };
+  const [loader,setLoading]= useState(true);
+  const [name,setName]= useState("");
+  const [phoneNumber,setPhoneNumber]= useState("");
+  const [VehicleNum,SetVehicleNum]= useState("");
+  const [vehicleBrand,setvehicleBrand]= useState("");
+  const [vehicleColor,setVehicleColor]= useState("");
+  const [time,setTime]= useState("");
+  const [lat,setLat]= useState("");
+  const [long,setLong]= useState("");
+  const [acc,setAcc]= useState("");
+
+  var control =  true;
+  const everyTime=async()=> {
+    if(control===true){
+      console.log("sda",control);
+   let data =  await authService.accident()
+   if(data.data.length!=0){
+    console.log("data",data);
+    setLoading(false);
+    let n = data.data.length-1;
+    setName(data.data[n].customerId.name);
+    setPhoneNumber(data.data[n].customerId.phoneNo);
+    SetVehicleNum(data.data[n].customerId.vehicleNo);
+    setvehicleBrand(data.data[n].customerId.vehicleBrand);
+    setVehicleColor(data.data[n].customerId.vehicleColor);
+    console.log(data.data[n].accidentLocationId.date)
+    setTime(data.data[n].accidentLocationId.date+" "+data.data[0].accidentLocationId.time); 
+    setLat(data.data[n].accidentLocationId.lat);
+    setLong(data.data[n].accidentLocationId.long);
+    setAcc(data.data[n].accidentLocationId._id);
+    control = false;
+   }
+    }
+  
+}
+  useEffect(()=>{
+ if(loader){
+  // vAR
+  var myInterval = setInterval(everyTime, 5000);
+ }
+  },[loader]);
   return (
     <View
       style={{
@@ -27,7 +69,7 @@ const HomeScreen = ({navigation}) => {
         Save the Life
       </Text>
       <View style={{height: '70%'}}>
-        {true ? (
+        {loader? (
           <View
             style={{
               height: '90%',
@@ -61,18 +103,25 @@ const HomeScreen = ({navigation}) => {
               margin: 16,
               borderRadius: 23,
             }}>
-            <Text style={{fontSize: 20, margin: 16}}>Name: ritik</Text>
+            <Text style={{fontSize: 20, margin: 16}}>Name: {name}</Text>
             <Text style={{fontSize: 20, margin: 16}}>
-              phone number: 891239821938
+              phone number: {phoneNumber}
             </Text>
             <Text style={{fontSize: 20, margin: 16}}>
-              vehicle number: 2213as
+              vehicle number:  {VehicleNum}
             </Text>
             <Text style={{fontSize: 20, margin: 16}}>
-              place: sajsannajcnajsncjasn sancj
+            vehicle Brand: {vehicleBrand}
+            </Text>
+            <Text style={{fontSize: 20, margin: 16}}>
+            vehicle color: {vehicleColor}
+            </Text>
+            <Text style={{fontSize: 20, margin: 16}}>
+            time: {time}
             </Text>
             <TouchableOpacity
-              onPress={() => {
+              onPress={async() => {
+                await authService.accept({accidentId:acc});
                 mapOpen();
               }}
               style={{
@@ -92,7 +141,9 @@ const HomeScreen = ({navigation}) => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={() => {setLoading(true);
+                control = true;
+              }}
               style={{
                 marginHorizontal: 55,
                 alignItems: 'center',
